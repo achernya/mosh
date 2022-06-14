@@ -30,7 +30,8 @@
     also delete it here.
 */
 
-#include <stdio.h>
+#include <cassert>
+#include <cstdio>
 
 #include "test_utils.h"
 
@@ -49,4 +50,19 @@ void hexdump( const Crypto::AlignedBuffer &buf, const char *name ) {
 
 void hexdump( const std::string &buf, const char *name ) {
   hexdump( buf.data(), buf.size(), name );
+}
+
+std::string unhexify(const std::string& in) {
+  std::string out;
+  // Every 2 hex characters coorespond to a single byte, so the output
+  // string will be half the size of the input.
+  assert(in.size() % 2 == 0);
+  out.reserve(in.size() / 2);
+  for (size_t i = 0; i < in.size(); i += 2) {
+    unsigned int result = 0;
+    assert(sscanf(in.c_str() + i, "%02x", &result) == 1);
+    assert(result < 256);
+    out.append(reinterpret_cast<const char*>(&result), 1);
+  }
+  return out;
 }

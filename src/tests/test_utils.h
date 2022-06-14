@@ -43,4 +43,6 @@ void hexdump( const void *buf, size_t len, const char *name );
 void hexdump( const Crypto::AlignedBuffer &buf, const char *name );
 void hexdump( const std::string &buf, const char *name );
 
+std::string unhexify(const std::string& in);
+
 #endif

@@ -133,14 +133,66 @@ static void test_one_session( void ) {
   }
 }
 
+static void deterministic_session() {
+  std::string key_str = unhexify("ad77c2150b9060131b74f4a81991d2c9");
+  std::string nonce_str = unhexify("a68fbd5fabbd1670");
+  std::string plaintext =
+    unhexify("bf206327afe1d5ed1417acc5b6ab387ab8640668e7b8aacc956214422670d3ac3"
+	     "d2ee8ff6ad275439fc9214c413c7b4fc3cc0e4678415ca4394805f8a6df8ba0b5"
+	     "8834444d2bb107ff9037a9ea9b821bd7211caf5f0e2565c7fef6014a584a7cb12"
+	     "e3516346df212e3b0cd7402e57eae5576b436f69a115e185f3d7872ca5ea45855"
+	     "3910b1772312e4464eb85a2583dc10b1682e020ee090257394cb6a3262f71d427"
+	     "cad6cb679e4c325513fa71147a319bf09b7df2d574502d7656fc81062365a2340"
+	     );
+  std::string target_ciphertext =
+    unhexify("a68fbd5fabbd167005d78ab6e8302f5acefb33144d4ffa9587a60f3970ae85012"
+	     "0b4636d2d2fc5316a2d9554de112e2457e3088f53cd5e8eefb5681ed84bb8f4fa"
+	     "64c220292c4a2dce332c1d99d73a948a079606bc9fb2c873d0c3376269c1cdc49"
+	     "6b29b0d6f26a1f4354fd553008bd2bf85e3d40654bd9139d802ae36f2f2972f96"
+	     "0ca9d472e43cd947f15b37665c8a9fd6512d058fae294c13de52831582d44d0f9"
+	     "8fe6d299bfe3c9e8b918cba624b3097d58736319cc177516c28fc172a3a0ff305"
+	     "86b01e5a9453b304c2df0038cc4b384cdc0e77ea8d5fd0a3");
+  if (verbose) {
+    printf("Deterministic session\n");
+  }
+  Base64Key key;
+  memcpy(key.data(), key_str.data(), key_str.size());
+  Session encryption_session(key);
+  Session decryption_session(key);
+  Nonce nonce(nonce_str.data(), nonce_str.size());
+  std::string ciphertext = encryption_session.encrypt(Message(nonce, plaintext));
+  if (verbose) {
+    hexdump(ciphertext, "ct");
+  }
+  fatal_assert(ciphertext == target_ciphertext);
+  Message decrypted = decryption_session.decrypt(target_ciphertext);
+  if (verbose) {
+    printf(DUMP_NAME_FMT NONCE_FMT "\n", "dec nonce", decrypted.nonce.val());
+    hexdump(decrypted.text, "dec pt");
+  }
+
+  fatal_assert(decrypted.nonce.cc_str() == nonce_str);
+  fatal_assert(decrypted.text == plaintext);
+  if (verbose) {
+    printf("\n");
+  }
+}
+
 int main( int argc, char *argv[] ) {
   if ( argc >= 2 && strcmp( argv[ 1 ], "-v" ) == 0 ) {
     verbose = true;
   }
 
+  try {
+    deterministic_session();
+  } catch ( const CryptoException &e ) {
+    fprintf(stderr, "Crypto exception: %s\r\n",
+	    e.what());
+    return 1;
+  }
   for ( size_t i=0; i<NUM_SESSIONS; i++ ) {
     try {
-      test_one_session();
+      //test_one_session();
     } catch ( const CryptoException &e ) {
       fprintf( stderr, "Crypto exception: %s\r\n",
                e.what() );

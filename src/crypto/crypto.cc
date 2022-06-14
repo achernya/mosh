@@ -208,6 +208,9 @@ const string Session::encrypt( const Message & plaintext )
   memcpy( plaintext_buffer.data(), plaintext.text.data(), pt_len );
   memcpy( nonce_buffer.data(), plaintext.nonce.data(), Nonce::NONCE_LEN );
 
+  // For debugging
+  memset(ciphertext_buffer.data(), '\0', ciphertext_buffer.len());
+
   if ( ciphertext_len != ae_encrypt( ctx,                                     /* ctx */
 				     nonce_buffer.data(),                     /* nonce */
 				     plaintext_buffer.data(),                 /* pt */
