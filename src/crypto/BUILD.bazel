@@ -1,0 +1,48 @@
+load("@rules_cc//cc:defs.bzl", "cc_library")
+
+package(default_visibility = ["//visibility:public"])
+
+cc_library(
+    name = "base64",
+    srcs = ["base64.cc"],
+    hdrs = ["base64.h"],
+    deps = ["//src/util:fatal_assert"],
+)
+
+cc_library(
+    name = "byteorder",
+    hdrs = ["byteorder.h"],
+)
+
+config_setting(
+    name = "ocb_openssl",
+    values = {
+        "define": "USE_AES_OCB_FROM_OPENSSL=1",
+    },
+)
+
+cc_library(
+    name = "crypto",
+    srcs = ["crypto.cc"] +
+           select({
+               ":ocb_openssl": ["ocb_openssl.cc"],
+               "//conditions:default": ["ocb_internal.cc"],
+           }),
+    hdrs = [
+        "ae.h",
+        "crypto.h",
+    ],
+    deps = [
+        ":base64",
+        ":byteorder",
+        ":prng",
+        "//external:openssl",
+        "//src/include:config",
+        "//src/util:fatal_assert",
+    ],
+)
+
+cc_library(
+    name = "prng",
+    hdrs = ["prng.h"],
+)

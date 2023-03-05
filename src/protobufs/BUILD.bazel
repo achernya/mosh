@@ -1,0 +1,34 @@
+load("@rules_proto//proto:defs.bzl", "proto_library")
+load("@rules_cc//cc:defs.bzl", "cc_proto_library")
+
+package(default_visibility = ["//visibility:public"])
+
+proto_library(
+    name = "hostinput_proto",
+    srcs = ["hostinput.proto"],
+)
+
+cc_proto_library(
+    name = "hostinput_cc_proto",
+    deps = [":hostinput_proto"],
+)
+
+proto_library(
+    name = "transportinstruction_proto",
+    srcs = ["transportinstruction.proto"],
+)
+
+cc_proto_library(
+    name = "transportinstruction_cc_proto",
+    deps = [":transportinstruction_proto"],
+)
+
+proto_library(
+    name = "userinput_proto",
+    srcs = ["userinput.proto"],
+)
+
+cc_proto_library(
+    name = "userinput_cc_proto",
+    deps = [":userinput_proto"],
+)

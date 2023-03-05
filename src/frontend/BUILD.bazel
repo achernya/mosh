@@ -1,0 +1,45 @@
+load("@rules_cc//cc:defs.bzl", "cc_library")
+
+package(default_visibility = ["//visibility:public"])
+
+cc_library(
+    name = "terminaloverlay",
+    srcs = ["terminaloverlay.cc"],
+    hdrs = ["terminaloverlay.h"],
+    deps = [
+        "//src/network",
+        "//src/terminal",
+    ],
+)
+
+cc_library(
+    name = "stmclient",
+    srcs = ["stmclient.cc"],
+    hdrs = ["stmclient.h"],
+    deps = [
+        ":terminaloverlay",
+        "//src/network",
+        "//src/statesync",
+        "//src/terminal",
+    ],
+)
+
+cc_binary(
+    name = "mosh-client",
+    srcs = ["mosh-client.cc"],
+    deps = [
+        ":stmclient",
+        "//src/include:version",
+    ],
+)
+
+cc_binary(
+    name = "mosh-server",
+    srcs = ["mosh-server.cc"],
+    deps = [
+        ":stmclient",
+        "//src/include:version",
+        "@linux_libs//:utempter",
+        "@linux_libs//:util",
+    ],
+)

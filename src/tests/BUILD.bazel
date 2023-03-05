@@ -1,0 +1,125 @@
+load("@rules_cc//cc:defs.bzl", "cc_library")
+load("@rules_cc//cc:defs.bzl", "cc_test")
+
+cc_library(
+    name = "test_utils",
+    srcs = ["test_utils.cc"],
+    hdrs = ["test_utils.h"],
+    deps = ["//src/crypto"],
+)
+
+cc_test(
+    name = "ocb_aes",
+    srcs = ["ocb-aes.cc"],
+    deps = [
+        ":test_utils",
+        "//src/crypto",
+        "//src/util",
+    ],
+)
+
+cc_test(
+    name = "encrypt_decrypt",
+    srcs = ["encrypt-decrypt.cc"],
+    deps = [
+        ":test_utils",
+        "//src/crypto",
+        "//src/util",
+    ],
+)
+
+genrule(
+    name = "base64_vector",
+    srcs = ["genbase64.pl"],
+    outs = ["base64_vector.cc"],
+    cmd = "echo \"#include \\\"src/tests/base64_vector.h\\\"\" > $@; $< >> $@",
+)
+
+cc_test(
+    name = "base64",
+    srcs = [
+        "base64.cc",
+        "base64_vector.cc",
+        "base64_vector.h",
+    ],
+    deps = [
+        ":test_utils",
+        "//src/crypto",
+        "//src/crypto:base64",
+        "//src/util",
+    ],
+)
+
+cc_test(
+    name = "nonce_incr",
+    srcs = ["nonce-incr.cc"],
+    deps = ["//src/network"],
+)
+
+cc_binary(
+    name = "inpty",
+    srcs = ["inpty.cc"],
+    deps = [
+        "//src/util",
+        "@linux_libs//:util",
+    ],
+)
+
+cc_binary(
+    name = "is-utf8-locale",
+    srcs = ["is-utf8-locale.cc"],
+    deps = [
+        "//src/util",
+    ],
+)
+
+# TODO: Uncomment these when the test harness is made to work
+DISPLAYTESTS = [
+    # "e2e-success.test",
+    # "e2e-failure.test",
+    # "emulation-ascii-iso-8859.test",
+    # "emulation-80th-column.test",
+    # "emulation-attributes-vt100.test",
+    # "emulation-attributes-16color.test",
+    # "emulation-attributes-256color8.test",
+    # "emulation-attributes-256color248.test",
+    # "emulation-attributes-truecolor.test",
+    # "emulation-attributes-bce.test",
+    # "emulation-back-tab.test",
+    # "emulation-cursor-motion.test",
+    # "emulation-multiline-scroll.test",
+    # "emulation-scroll.test",
+    # "emulation-wrap-across-frames.test",
+    # "network-no-diff.test",
+    # "prediction-unicode.test",
+    # "pty-deadlock.test",
+    # "repeat.test",
+    # "repeat-with-input.test",
+    # "server-network-timeout.test",
+    # "server-signal-timeout.test",
+    # "window-resize.test",
+    # "unicode-combine-fallback-assert.test",
+    # "unicode-later-combining.test",
+    # "window-resize.test",
+]
+
+sh_library(
+    name = "e2e-test_lib",
+    data = [
+        "e2e-test",
+        "e2e-test-server",
+        "e2e-test-subrs",
+        "hold-stdin",
+        "print-exitstatus",
+        ":is-utf8-locale",
+        "//scripts:mosh_bin",
+        "//src/frontend:mosh-client",
+        "//src/frontend:mosh-server",
+    ],
+)
+
+[sh_test(
+    name = x.replace(".test", ""),
+    srcs = [x],
+    deps = [":e2e-test_lib"],
+) for x in DISPLAYTESTS]

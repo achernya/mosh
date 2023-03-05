@@ -1,0 +1,32 @@
+load("@rules_cc//cc:defs.bzl", "cc_library")
+
+package(default_visibility = ["//visibility:public"])
+
+cc_library(
+    name = "fatal_assert",
+    hdrs = ["fatal_assert.h"],
+)
+
+cc_library(
+    name = "util",
+    srcs = [
+        "locale_utils.cc",
+        "pty_compat.cc",
+        "select.cc",
+        "swrite.cc",
+        "timestamp.cc",
+    ],
+    hdrs = [
+        "dos_assert.h",
+        "locale_utils.h",
+        "pty_compat.h",
+        "select.h",
+        "shared.h",
+        "swrite.h",
+        "timestamp.h",
+    ],
+    deps = [
+        ":fatal_assert",
+        "//src/include:config",
+    ],
+)

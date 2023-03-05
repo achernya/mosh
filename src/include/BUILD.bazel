@@ -1,0 +1,19 @@
+load("@rules_cc//cc:defs.bzl", "cc_library")
+
+package(default_visibility = ["//visibility:public"])
+
+cc_library(
+    name = "config",
+    hdrs = ["config.h"],
+)
+
+genrule(
+    name = "make_version",
+    outs = ["version.h"],
+    cmd = 'printf "#define BUILD_VERSION \\\"%s\\\"\n" \"mosh-from-bazel\" > $@',
+)
+
+cc_library(
+    name = "version",
+    hdrs = ["version.h"],
+)

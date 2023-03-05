@@ -1,0 +1,29 @@
+load("@rules_cc//cc:defs.bzl", "cc_library")
+
+package(default_visibility = ["//visibility:public"])
+
+cc_library(
+    name = "network",
+    srcs = [
+        "compressor.cc",
+        "network.cc",
+        "networktransport-impl.h",
+        "transportfragment.cc",
+        "transportsender-impl.h",
+    ],
+    hdrs = [
+        "compressor.h",
+        "network.h",
+        "networktransport.h",
+        "transportfragment.h",
+        "transportsender.h",
+        "transportstate.h",
+    ],
+    deps = [
+        "//src/crypto",
+        "//src/protobufs:hostinput_cc_proto",
+        "//src/protobufs:transportinstruction_cc_proto",
+        "//src/protobufs:userinput_cc_proto",
+        "//src/util",
+    ],
+)

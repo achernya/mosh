@@ -1,0 +1,8 @@
+package(default_visibility = ["//visibility:public"])
+
+genrule(
+    name = "mosh_bin",
+    srcs = ["mosh.pl"],
+    outs = ["mosh"],
+    cmd = "cat $< > $@; chmod +x $@",
+)

@@ -1,0 +1,35 @@
+load("@rules_cc//cc:defs.bzl", "cc_library")
+
+package(default_visibility = ["//visibility:public"])
+
+cc_library(
+    name = "terminal",
+    srcs = [
+        "parser.cc",
+        "parseraction.cc",
+        "parserstate.cc",
+        "terminal.cc",
+        "terminaldispatcher.cc",
+        "terminaldisplay.cc",
+        "terminaldisplayinit.cc",
+        "terminalframebuffer.cc",
+        "terminalfunctions.cc",
+        "terminaluserinput.cc",
+    ],
+    hdrs = [
+        "parser.h",
+        "parseraction.h",
+        "parserstate.h",
+        "parserstatefamily.h",
+        "parsertransition.h",
+        "terminal.h",
+        "terminaldispatcher.h",
+        "terminaldisplay.h",
+        "terminalframebuffer.h",
+        "terminaluserinput.h",
+    ],
+    deps = [
+        "//src/include:config",
+        "//src/util",
+    ],
+)

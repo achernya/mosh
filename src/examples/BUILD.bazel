@@ -1,0 +1,53 @@
+load("@rules_cc//cc:defs.bzl", "cc_binary")
+
+cc_binary(
+    name = "encrypt",
+    srcs = ["encrypt.cc"],
+    deps = ["//src/crypto"],
+)
+
+cc_binary(
+    name = "decrypt",
+    srcs = ["decrypt.cc"],
+    deps = ["//src/crypto"],
+)
+
+cc_binary(
+    name = "parse",
+    srcs = ["parse.cc"],
+    deps = [
+        "//src/terminal",
+        "@linux_libs//:util",
+    ],
+)
+
+cc_binary(
+    name = "termemu",
+    srcs = ["termemu.cc"],
+    deps = [
+        "//src/statesync",
+        "//src/terminal",
+        "@linux_libs//:util",
+    ],
+)
+
+cc_binary(
+    name = "ntester",
+    srcs = ["ntester.cc"],
+    deps = [
+        "//src/network",
+        "//src/statesync",
+        "@linux_libs//:util",
+    ],
+)
+
+cc_binary(
+    name = "benchmark",
+    srcs = ["benchmark.cc"],
+    deps = [
+        "//src/frontend:terminaloverlay",
+        "//src/network",
+        "//src/statesync",
+        "@linux_libs//:util",
+    ],
+)
