@@ -21,7 +21,6 @@ cc_library(
         "locale_utils.h",
         "pty_compat.h",
         "select.h",
-        "shared.h",
         "swrite.h",
         "timestamp.h",
     ],

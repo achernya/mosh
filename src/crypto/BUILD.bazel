@@ -36,9 +36,9 @@ cc_library(
         ":base64",
         ":byteorder",
         ":prng",
-        "//external:openssl",
         "//src/include:config",
         "//src/util:fatal_assert",
+        "@boringssl//:crypto",
     ],
 )
 

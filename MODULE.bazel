@@ -1,0 +1,36 @@
+module(name = "mosh")
+
+# Last updated 2025-02-26
+bazel_dep(name = "rules_cc", version = "0.1.1")
+
+# Last updated 2025-02-26
+bazel_dep(name = "protobuf", repo_name = "com_google_protobuf", version = "29.3")
+
+# Last updated 2025-02-26
+bazel_dep(name = "boringssl", version = "0.20250212.0")
+
+# System-proivded dependencies
+new_local_repository = use_repo_rule("@bazel_tools//tools/build_defs/repo:local.bzl", "new_local_repository")
+
+new_local_repository(
+    name = "linux_libs",
+    build_file_content = """
+# forkpty sometimes exists in libutil or libbsd.
+cc_library(
+	name = "util",
+	srcs = [],
+	visibility = ["//visibility:public"],
+)
+cc_library(
+	name = "tinfo",
+	srcs = ["libtinfo.so"],
+	visibility = ["//visibility:public"],
+)
+cc_library(
+	name = "utempter",
+	srcs = ["libutempter.so"],
+	visibility = ["//visibility:public"],
+)
+""",
+    path = "/usr/lib/x86_64-linux-gnu",
+)
